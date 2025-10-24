@@ -19,31 +19,92 @@ def home(request):
 
 @login_required
 def lista_apolices(request):
-    apolices = Apolice.objects.all().select_related('segurado', 'tipo_seguro')  # Adicionei tipo_seguro aqui
+    apolices = Apolice.objects.all().select_related('segurado', 'tipo_seguro')
 
-    
     # Filtros
-    status_filter = request.GET.get('status')
-    if status_filter:
-        apolices = apolices.filter(status=status_filter)
+    numero_filter = request.GET.get('numero')
+    if numero_filter:
+        apolices = apolices.filter(numero__icontains=numero_filter)
     
     seguradora_filter = request.GET.get('seguradora')
     if seguradora_filter:
         apolices = apolices.filter(seguradora__icontains=seguradora_filter)
     
+    tipo_seguro_filter = request.GET.get('tipo_seguro')
+    if tipo_seguro_filter:
+        apolices = apolices.filter(tipo_seguro_id=tipo_seguro_filter)
+    
+    status_filter = request.GET.get('status')
+    if status_filter:
+        apolices = apolices.filter(status=status_filter)
+    
     segurado_filter = request.GET.get('segurado')
     if segurado_filter:
         apolices = apolices.filter(segurado_id=segurado_filter)
     
+    data_inicio_filter = request.GET.get('data_inicio')
+    if data_inicio_filter:
+        apolices = apolices.filter(data_inicio__gte=data_inicio_filter)
+    
+    data_fim_filter = request.GET.get('data_fim')
+    if data_fim_filter:
+        apolices = apolices.filter(data_fim__lte=data_fim_filter)
+
+    # EXPORT TO EXCEL - Use the FILTERED queryset
+    if request.GET.get('export') == 'xlsx':
+        # Create DataFrame with FILTERED data
+        data = []
+        for apolice in apolices:  # This uses the filtered queryset
+            data.append({
+                'Número': apolice.numero,
+                'Seguradora': apolice.seguradora,
+                'Tipo Seguro': apolice.tipo_seguro.nome if apolice.tipo_seguro else '',
+                'Segurado': apolice.segurado.nome if apolice.segurado else '',
+                'Status': apolice.get_status_display(),
+                'Data Início': apolice.data_inicio.strftime('%d/%m/%Y') if apolice.data_inicio else '',
+                'Data Fim': apolice.data_fim.strftime('%d/%m/%Y') if apolice.data_fim else '',
+                'Valor Seguro': str(apolice.valor_seguro),
+                'Valor Prêmio': str(apolice.valor_premio),
+                'Moeda': apolice.moeda,
+                'Observações': apolice.observacoes or '',
+                'Criado em': apolice.criado_em.strftime('%d/%m/%Y %H:%M') if apolice.criado_em else '',
+            })
+        
+        df = pd.DataFrame(data)
+        
+        # Create HTTP response with Excel file
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="apolices.xlsx"'
+        
+        with pd.ExcelWriter(response, engine='openpyxl') as writer:
+            df.to_excel(writer, sheet_name='Apólices', index=False)
+            
+            # Auto-adjust column widths
+            worksheet = writer.sheets['Apólices']
+            for column in worksheet.columns:
+                max_length = 0
+                column_letter = column[0].column_letter
+                for cell in column:
+                    try:
+                        if len(str(cell.value)) > max_length:
+                            max_length = len(str(cell.value))
+                    except:
+                        pass
+                adjusted_width = (max_length + 2)
+                worksheet.column_dimensions[column_letter].width = adjusted_width
+        
+        return response
+
+    # Continue with normal view processing for HTML display
     # Ordenação
     sort_column = request.GET.get('sort', 'criado_em')
     sort_order = request.GET.get('order', 'desc')
     
-    # Mapear colunas do template para campos do modelo - CORRIGIDO
+    # Mapear colunas do template para campos do modelo
     sort_mapping = {
         'numero': 'numero',
         'seguradora': 'seguradora',
-        'tipo': 'tipo_seguro__nome',  # CORREÇÃO: tipo -> tipo_seguro__nome
+        'tipo': 'tipo_seguro__nome',
         'segurado': 'segurado__nome',
         'status': 'status',
         'data_inicio': 'data_inicio',
@@ -86,9 +147,13 @@ def lista_apolices(request):
         'apolices': apolices_formatadas,
         'status_choices': Apolice.STATUS_CHOICES,
         'tipos_seguros': TiposSeguros.objects.filter(ativo=True).order_by('nome'),
-        'status_filter': status_filter,
+        'numero_filter': numero_filter,
         'seguradora_filter': seguradora_filter,
+        'tipo_seguro_filter': tipo_seguro_filter,
+        'status_filter': status_filter,
         'segurado_filter': segurado_filter,
+        'data_inicio_filter': data_inicio_filter,
+        'data_fim_filter': data_fim_filter,
         'segurados': Companies.objects.all().order_by('nome'),
         'companies': Companies.objects.all().order_by('nome'),
         'total_apolices': total_apolices,
@@ -100,7 +165,6 @@ def lista_apolices(request):
         'current_order': sort_order,
     }
     return render(request, 'app/lista_apolices.html', context)
-
 
 @login_required
 def nova_apolice(request):

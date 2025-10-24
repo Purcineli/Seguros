@@ -639,27 +639,28 @@
 <script>
 
 function exportToExcel() {
-    // Get current filter values
-    const filters = {
-        numero: document.querySelector('[name="numero"]')?.value || '',
-        seguradora: document.querySelector('[name="seguradora"]')?.value || '',
-        tipo_seguro: document.querySelector('[name="tipo_seguro"]')?.value || '',
-        status: document.querySelector('[name="status"]')?.value || '',
-        data_inicio: document.querySelector('[name="data_inicio"]')?.value || '',
-        data_fim: document.querySelector('[name="data_fim"]')?.value || ''
-    };
-
-    // Build query string
+    // Get filters from current URL parameters instead of form inputs
+    const currentUrl = new URL(window.location.href);
+    const currentParams = new URLSearchParams(currentUrl.search);
+    
+    // Build new URL with current filters + export parameter
     const params = new URLSearchParams();
-    Object.keys(filters).forEach(key => {
-        if (filters[key]) {
-            params.append(key, filters[key]);
+    
+    // Copy all existing filter parameters
+    for (const [key, value] of currentParams) {
+        if (key !== 'export' && key !== 'sort' && key !== 'order') {
+            params.append(key, value);
         }
-    });
+    }
+    
+    // Add export parameter
     params.append('export', 'xlsx');
-
+    
+    const exportUrl = `{% url 'lista_apolices' %}?${params.toString()}`;
+    console.log('Export URL with filters:', exportUrl);
+    
     // Redirect to export URL
-    window.location.href = `{% url 'lista_apolices' %}?${params.toString()}`;
+    window.location.href = exportUrl;
 }
 
 function deletarApolice(apoliceId) {
@@ -1092,9 +1093,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     </select>
                 </div>
                 <div class="form-group inline">
-                <button type="submit" class="btn btn-primary">Filtrar</button>
-                <button type="button" class="btn btn-secondary" data-url="{% url 'lista_apolices' %}" onclick="window.location.href=this.dataset.url">Limpar</button>
-                <button type="button" class="btn btn-export" onclick="exportToExcel()">Exportar XLSX</button>
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                    <button type="button" class="btn btn-secondary" data-url="{% url 'lista_apolices' %}" onclick="window.location.href=this.dataset.url">Limpar</button>
+                    <button type="button" class="btn btn-export" onclick="exportToExcel()">Exportar XLSX</button>
                 </div>
 
             </form>
