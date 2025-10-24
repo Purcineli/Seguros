@@ -6,706 +6,782 @@
     <title>Apólices - GS INIMA BRASIL</title>
     {% load static %}
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    /* ===== RESET & BASE STYLES ===== */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f6fa;
-            color: #333;
-        }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f6fa;
+        color: #333;
+        line-height: 1.6;
+    }
 
-        .navbar {
-            background: linear-gradient(135deg, #005e83 0%, #3ab0c8 100%);
-            padding: 15px 30px;
-            color: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+    /* ===== LAYOUT & CONTAINERS ===== */
+    .container {
+        max-width: 1400px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
 
+    .nav-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* ===== NAVIGATION ===== */
+    .navbar {
+        background: linear-gradient(135deg, #005e83 0%, #3ab0c8 100%);
+        padding: 15px 30px;
+        color: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo {
+        height: 40px;
+        filter: brightness(0) invert(1);
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .nav-links a {
+        color: white;
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .nav-links a:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .logout-form {
+        margin: 0;
+    }
+
+    .logout-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .logout-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* ===== HEADER & TYPOGRAPHY ===== */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .page-title {
+        color: #005e83;
+        font-size: 28px;
+        font-weight: 600;
+    }
+
+    /* ===== FILTERS & FORMS ===== */
+    .filters {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+
+    .filter-form {
+        display: flex;
+        gap: 15px;
+        align-items: end;
+        flex-wrap: wrap;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex-wrap: nowrap;
+    }
+
+    .form-group.inline {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #555;
+        font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px 12px;
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+        min-width: 200px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #3ab0c8;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        text-align: center;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+
+    .btn-row {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    flex-wrap: nowrap; /* impede quebra de linha */
+    overflow-x: auto;   /* permite rolagem horizontal se necessário */
+    align-items: center;
+    }
+
+
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #005e83 0%, #3ab0c8 100%);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 94, 131, 0.3);
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-1px);
+    }
+
+    .btn-view {
+        background: #17a2b8;
+        color: white;
+    }
+
+    .btn-view:hover {
+        background: #138496;
+        transform: translateY(-1px);
+    }
+
+    .btn-edit {
+        background: #ffc107;
+        color: #212529;
+    }
+
+    .btn-edit:hover {
+        background: #e0a800;
+        transform: translateY(-1px);
+    }
+
+    .btn-delete {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background: #c0392b;
+        transform: translateY(-1px);
+    }
+
+    .btn-disabled {
+        background: #95a5a6;
+        color: white;
+        cursor: not-allowed;
+    }
+
+    .btn-disabled:hover {
+        transform: none;
+        opacity: 1;
+    }
+
+    /* ===== TABLE STYLES ===== */
+    .apolices-table {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 94, 131, 0.1);
+        overflow: hidden;
+        margin-top: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: linear-gradient(135deg, #005e83, #3ab0c8);
+        color: white;
+        padding: 16px 12px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        position: relative;
+        user-select: none;
+    }
+
+    th:hover {
+        background: linear-gradient(135deg, #004a6a, #2a9bb8);
+    }
+
+    th.sortable {
+        padding-right: 30px;
+    }
+
+    .sort-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 12px;
+        opacity: 0.7;
+    }
+
+    th.sort-asc .sort-icon::after {
+        content: "↑";
+    }
+
+    th.sort-desc .sort-icon::after {
+        content: "↓";
+    }
+
+    td {
+        padding: 14px 12px;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+    tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    /* ===== STATUS BADGES ===== */
+    .status-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        display: inline-block;
+    }
+
+    .status-ativa {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-cancelada {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .status-vencida {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-pendente {
+        background: #cce7ff;
+        color: #004085;
+    }
+
+    /* ===== EXPIRATION DAYS ===== */
+    .dias-vencimento {
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .vencido,
+    .status-inativo,
+    .hoje {
+        background: #dc3545;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+    }
+
+    .amanha {
+        background: #fd7e14;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+    }
+
+    .proxima-semana {
+        background: #ffc107;
+        color: #212529;
+        padding: 6px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+    }
+
+    .proximo-mes {
+        background: #17a2b8;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+    }
+
+    .normal {
+        background: #28a745;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+    }
+
+    /* ===== VALUES & ACTIONS ===== */
+    .valor {
+        font-family: 'Courier New', monospace;
+        font-weight: 600;
+        text-align: right;
+        color: #005e83;
+        white-space: nowrap;
+    }
+
+    .actions {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    /* ===== TOOLTIP ===== */
+    #observacoes-tooltip {
+        position: fixed;
+        display: none;
+        width: 300px;
+        background: #2d3748;
+        color: white;
+        padding: 12px;
+        border-radius: 6px;
+        font-size: 14px;
+        line-height: 1.4;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        z-index: 10000;
+        border: 1px solid #4a5568;
+    }
+
+    #observacoes-tooltip::after {
+        content: '';
+        position: absolute;
+        top: 10px;
+        left: -12px;
+        border-width: 6px;
+        border-style: solid;
+        border-color: transparent #2d3748 transparent transparent;
+    }
+
+    /* ===== MODAL STYLES ===== */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.3s;
+    }
+
+    .modal-content {
+        background-color: white;
+        margin: 2% auto;
+        padding: 0;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 700px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+        animation: slideIn 0.3s;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #005e83, #3ab0c8);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 12px 12px 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+    }
+
+    .close {
+        color: white;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: opacity 0.3s;
+    }
+
+    .close:hover {
+        opacity: 0.7;
+    }
+
+    .modal-body {
+        padding: 30px;
+    }
+
+    .modal-footer {
+        padding: 20px 30px;
+        background: #f8f9fa;
+        border-radius: 0 0 12px 12px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    /* ===== STATS CARDS ===== */
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 32px;
+        font-weight: 700;
+        color: #005e83;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        color: #666;
+        font-size: 14px;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+    .empty-state div {
+        font-size: 48px;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        color: #495057;
+        margin-bottom: 10px;
+    }
+
+    .empty-state p {
+        margin-bottom: 20px;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+        from { 
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+        to { 
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ===== RESPONSIVE DESIGN ===== */
+    @media (max-width: 768px) {
         .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            height: 40px;
-            filter: brightness(0) invert(1);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        .nav-links a:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .logout-form {
-            margin: 0;
-        }
-
-        .logout-btn {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .logout-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .page-title {
-            color: #005e83;
-            font-size: 28px;
-            font-weight: 600;
-        }
-
-        .filters {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
+            flex-direction: column;
+            gap: 15px;
         }
 
         .filter-form {
-            display: flex;
-            gap: 15px;
-            align-items: end;
-            flex-wrap: wrap;
-        }
-
-        .form-group {
-            display: flex;
             flex-direction: column;
-            gap: 5px;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            color: #555;
-            font-size: 14px;
-        }
-
-        .form-group select,
-        .form-group input {
-            padding: 8px 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 5px;
-            font-size: 14px;
-            min-width: 200px;
-        }
-
-        .btn {
-            padding: 8px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #005e83 0%, #3ab0c8 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 94, 131, 0.3);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-        }
-
-        .apolices-table {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.3s;
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 2% auto;
-            padding: 0;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 700px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
-            animation: slideIn 0.3s;
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, #005e83, #3ab0c8);
-            color: white;
-            padding: 20px 30px;
-            border-radius: 12px 12px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h2 {
-            margin: 0;
-            font-size: 1.5rem;
-        }
-
-        .close {
-            color: white;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: opacity 0.3s;
-        }
-
-        .close:hover {
-            opacity: 0.7;
-        }
-
-        .modal-body {
-            padding: 30px;
-        }
-
-        .modal-footer {
-            padding: 20px 30px;
-            background: #f8f9fa;
-            border-radius: 0 0 12px 12px;
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-
-        /* Form Grid */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #2c3e50;
-            font-size: 14px;
+            align-items: stretch;
         }
 
         .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 10px 12px;
-            border: 2px solid #e9ecef;
-            border-radius: 6px;
-            font-size: 14px;
-            transition: border-color 0.3s;
+        .form-group select {
+            min-width: auto;
         }
 
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #3ab0c8;
+        .form-grid {
+            grid-template-columns: 1fr;
         }
 
-        .form-group small {
-            color: #6c757d;
-            font-size: 12px;
-            margin-top: 4px;
+        .modal-content {
+            margin: 5% auto;
+            width: 95%;
         }
 
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideIn {
-            from { 
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to { 
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .modal-content {
-                margin: 5% auto;
-                width: 95%;
-            }
+        .apolices-table {
+            overflow-x: auto;
         }
 
         table {
-            width: 100%;
-            border-collapse: collapse;
+            min-width: 800px;
         }
 
-        th {
-            background: linear-gradient(135deg, #005e83 0%, #3ab0c8 100%);
-            color: white;
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
+        .form-group.inline {
+            flex-direction: column;
+            align-items: stretch;
         }
+    }
 
-        td {
-            padding: 15px;
-            border-bottom: 1px solid #e0e0e0;
-        }
+    .btn-export {
+        background: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
 
-        tr:hover {
-            background-color: #f8f9fa;
-        }
+    .btn-export:hover {
+        background: #218838;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
 
-        /* Tabela Customizada */
-        .apolices-table {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 94, 131, 0.1);
-            overflow: hidden;
-            margin-top: 20px;
-        }
-
-        .apolices-table table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .apolices-table th {
-            background: linear-gradient(135deg, #005e83, #3ab0c8);
-            color: white;
-            padding: 16px 12px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            position: relative;
-            user-select: none;
-        }
-
-        .apolices-table th:hover {
-            background: linear-gradient(135deg, #004a6a, #2a9bb8);
-        }
-
-        .apolices-table th.sortable {
-            padding-right: 30px;
-        }
-
-        .sort-icon {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 12px;
-            opacity: 0.7;
-        }
-
-        .apolices-table th.sort-asc .sort-icon::after {
-            content: "↑";
-        }
-
-        .apolices-table th.sort-desc .sort-icon::after {
-            content: "↓";
-        }
-
-        .apolices-table td {
-            padding: 14px 12px;
-            border-bottom: 1px solid #f0f0f0;
-            font-size: 14px;
-            vertical-align: middle;
-        }
-
-        .apolices-table tbody tr {
-            transition: background-color 0.2s;
-        }
-
-        .apolices-table tbody tr:hover {
-            background-color: #f8f9fa;
-        }
-
-        .apolices-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
-        /* Status badges */
-        .status-badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-ativa {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status-cancelada {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .status-vencida {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-pendente {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
-
-        /* Dias para vencimento */
-        .dias-vencimento {
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .vencido, .status-inativo {
-            background: #dc3545;
-            color: white;
-            padding: 6px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            display: inline-block;
-        }
-
-        .hoje {
-            background: #dc3545;
-            color: white;
-            padding: 6px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            display: inline-block;
-        }
-
-        .amanha {
-            background: #fd7e14;
-            color: white;
-            padding: 6px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            display: inline-block;
-        }
-
-        .proxima-semana {
-            background: #ffc107;
-            color: #212529;
-            padding: 6px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            display: inline-block;
-        }
-
-        .proximo-mes {
-            background: #17a2b8;
-            color: white;
-            padding: 6px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            display: inline-block;
-        }
-
-        .normal {
-            background: #28a745;
-            color: white;
-            padding: 6px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            display: inline-block;
-        }
-
-        /* Valores */
-        .valor {
-            font-family: 'Courier New', monospace;
-            font-weight: 600;
-            text-align: right;
-        }
-
-        /* Ações */
-        .actions {
-            text-align: center;
-        }
-
-        .btn-sm {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s;
-        }
-
-        .btn-view {
-            background: #17a2b8;
-            color: white;
-        }
-
-        .btn-view:hover {
-            background: #138496;
-            transform: translateY(-1px);
-        }
-
-        .btn-disabled {
-            background: #6c757d;
-            color: white;
-            cursor: not-allowed;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6c757d;
-        }
-
-        .empty-state div {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-
-        .empty-state h3 {
-            color: #495057;
-            margin-bottom: 10px;
-        }
-
-        .empty-state p {
-            margin-bottom: 20px;
-        }
-
-        .status-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .status-ativa {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .btn-edit {
-            background: #ffc107;
-            color: #212529;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-edit:hover {
-            background: #e0a800;
-            transform: translateY(-1px);
-        }
-        .status-cancelada {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .status-vencida {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-pendente {
-            background: #cce7ff;
-            color: #004085;
-        }
-
-        .valor {
-            font-weight: 600;
-            color: #005e83;
-        }
-
-        .actions {
-            display: flex;
-            gap: 5px;
-        }
-
-        .btn-sm {
-            padding: 4px 8px;
-            font-size: 12px;
-            text-decoration: none;
-        }
-
-        .btn-view {
-            background: #17a2b8;
-            color: white;
-        }
-
-        .btn-pdf {
-            background: #dc3545;
-            color: white;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #666;
-        }
-
-        .empty-state i {
-            font-size: 48px;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 32px;
-            font-weight: 700;
-            color: #005e83;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            color: #666;
-            font-size: 14px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-        
-        .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            background: white;
-            font-size: 14px;
-            color: #333;
-            transition: border-color 0.3s;
-        }
-
-        .form-group select:focus {
-            outline: none;
-            border-color: #3ab0c8;
-        }
-
-        .form-group select option {
-            padding: 8px;
-        }
-
-        @media (max-width: 768px) {
-            .nav-container {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .filter-form {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .form-group select,
-            .form-group input {
-                min-width: auto;
-            }
-
-            .apolices-table {
-                overflow-x: auto;
-            }
-
-            table {
-                min-width: 800px;
-            }
-        }
     </style>
 </head>
 
 <script>
+
+function exportToExcel() {
+    // Get current filter values
+    const filters = {
+        numero: document.querySelector('[name="numero"]')?.value || '',
+        seguradora: document.querySelector('[name="seguradora"]')?.value || '',
+        tipo_seguro: document.querySelector('[name="tipo_seguro"]')?.value || '',
+        status: document.querySelector('[name="status"]')?.value || '',
+        data_inicio: document.querySelector('[name="data_inicio"]')?.value || '',
+        data_fim: document.querySelector('[name="data_fim"]')?.value || ''
+    };
+
+    // Build query string
+    const params = new URLSearchParams();
+    Object.keys(filters).forEach(key => {
+        if (filters[key]) {
+            params.append(key, filters[key]);
+        }
+    });
+    params.append('export', 'xlsx');
+
+    // Redirect to export URL
+    window.location.href = `{% url 'lista_apolices' %}?${params.toString()}`;
+}
+
+function deletarApolice(apoliceId) {
+    if (confirm('Tem certeza que deseja excluir esta apólice?\n\nEsta ação não pode ser desfeita.')) {
+        fetch(`/apolices/${apoliceId}/deletar/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Apólice excluída com sucesso!');
+                location.reload(); // Refresh the page to update the list
+            } else {
+                alert('Erro ao excluir apólice');
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Erro ao excluir apólice');
+        });
+    }
+}
+
+// CSRF Token function (if you don't have it)
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Create tooltip element
+    let tooltip = document.getElementById('observacoes-tooltip');
+    if (!tooltip) {
+        tooltip = document.createElement('div');
+        tooltip.id = 'observacoes-tooltip';
+        document.body.appendChild(tooltip);
+    }
+
+    // Add event listeners
+    document.querySelectorAll('.tooltip-fixo').forEach(element => {
+        element.addEventListener('mouseenter', function(e) {
+            const observacoes = this.getAttribute('data-observacoes');
+            
+            // Set tooltip content
+            tooltip.innerHTML = `<strong>Observações:</strong><br>${observacoes}`;
+            
+            // Position tooltip to the RIGHT of the element (avoids mouse interference)
+            const rect = this.getBoundingClientRect();
+            tooltip.style.left = `${rect.right + window.scrollX + 10}px`;
+            tooltip.style.top = `${rect.top + window.scrollY}px`;
+            
+            // Show tooltip
+            tooltip.style.display = 'block';
+        });
+        
+        element.addEventListener('mouseleave', function() {
+            // Small delay to allow moving to tooltip
+            setTimeout(() => {
+                if (!tooltip.matches(':hover')) {
+                    tooltip.style.display = 'none';
+                }
+            }, 100);
+        });
+        
+        // Allow hovering over tooltip itself
+        tooltip.addEventListener('mouseenter', function() {
+            tooltip.style.display = 'block';
+        });
+        
+        tooltip.addEventListener('mouseleave', function() {
+            tooltip.style.display = 'none';
+        });
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Move all tooltips to body level to escape container clipping
+    const tooltips = document.querySelectorAll('.tooltip-container');
+    
+    tooltips.forEach(container => {
+        const tooltip = container.querySelector('.tooltip-text');
+        if (tooltip) {
+            // Move tooltip to body
+            document.body.appendChild(tooltip);
+            
+            // Position tooltip on hover
+            container.addEventListener('mouseenter', function(e) {
+                const rect = container.getBoundingClientRect();
+                const scrollY = window.scrollY;
+                
+                // Position above element
+                tooltip.style.position = 'fixed';
+                tooltip.style.left = (rect.left + (rect.width / 2)) + 'px';
+                tooltip.style.top = (rect.top + scrollY - tooltip.offsetHeight - 10) + 'px';
+                tooltip.style.transform = 'translateX(-50%)';
+                
+                tooltip.style.visibility = 'visible';
+                tooltip.style.opacity = '1';
+            });
+            
+            container.addEventListener('mouseleave', function() {
+                tooltip.style.visibility = 'hidden';
+                tooltip.style.opacity = '0';
+            });
+        }
+    });
+});
 // Função para abrir modal de NOVA apólice
 function abrirModal() {
     document.getElementById('modalTitulo').textContent = 'Nova Apólice';
@@ -1015,10 +1091,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         {% endfor %}
                     </select>
                 </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Filtrar</button>
-                    <a href="{% url 'lista_apolices' %}" class="btn btn-secondary">Limpar</a>
+                <div class="form-group inline">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <button type="button" class="btn btn-secondary" data-url="{% url 'lista_apolices' %}" onclick="window.location.href=this.dataset.url">Limpar</button>
+                <button type="button" class="btn btn-export" onclick="exportToExcel()">Exportar XLSX</button>
                 </div>
+
             </form>
         </div>
 
@@ -1076,7 +1154,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     <tbody>
                         {% for apolice in apolices %}
                         <tr>
-                            <td><strong>{{ apolice.numero }}</strong></td>
+                            <td>
+                            <div class="tooltip-container">
+                                <strong class="tooltip-fixo" data-observacoes="{{ apolice.observacoes|default:'Sem observações' }}">
+                                {{ apolice.numero }}
+                                </strong>
+                            </div>
+                            </td>
+
                             <td>{{ apolice.seguradora }}</td>
                             <td>{{ apolice.tipo_seguro.nome }}</td>
                             <td>{{ apolice.segurado }}</td>
@@ -1111,21 +1196,25 @@ document.addEventListener('DOMContentLoaded', function() {
                             <td class="valor">R$ {{ apolice.valor_seguro_fmt }}</td>
                             <td class="valor">R$ {{ apolice.valor_premio_fmt }}</td>
                             <td class="actions">
-                                <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-                                    {% if apolice.pdf %}
-                                        <a href="{{ apolice.pdf.url }}" target="_blank" class="btn btn-sm btn-view" title="Abrir PDF">👀 Ver</a>
-                                    {% else %}
-                                        <span class="btn btn-sm btn-disabled">Sem PDF</span>
-                                    {% endif %}
-                                    
-                                    {% if pode_adicionar %}
-                                        <button type="button" class="btn btn-sm btn-edit" 
-                                                onclick="abrirModalEditar('{{ apolice.id }}')" 
-                                                title="Editar Apólice">
-                                            ✏️ Editar
-                                        </button>
-                                    {% endif %}
-                                </div>
+                            <div class="btn-row">
+                            {% if apolice.pdf %}
+                                <a href="{{ apolice.pdf.url }}" target="_blank" class="btn btn-sm btn-view" title="Abrir PDF">📄</a>
+                            {% else %}
+                                <span class="btn btn-sm btn-disabled" title="Sem PDF">🚫</span>
+                            {% endif %}
+
+                            {% if pode_adicionar %}
+                                <button type="button" class="btn btn-sm btn-edit" 
+                                        onclick="abrirModalEditar('{{ apolice.id }}')" 
+                                        title="Editar Apólice">✏️</button>
+
+                                <button type="button" class="btn btn-sm btn-delete" 
+                                        onclick="deletarApolice('{{ apolice.id }}')" 
+                                        title="Excluir Apólice">🗑️</button>
+                            {% endif %}
+                            </div>
+
+
                             </td>
                         </tr>
                         {% endfor %}

@@ -210,6 +210,24 @@
             margin-top: 10px;
         }
 
+        .card-link {
+            display: block;
+            text-decoration: none;
+            color: inherit; /* Mantém as cores do texto */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-link:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(0, 94, 131, 0.15);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .card-link .btn {
+            pointer-events: none; /* Permite clicar no card mesmo sobre o botão */
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -254,6 +272,78 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .disabled-card {
+            opacity: 0.6;
+            background: #f8f9fa;
+            border-left: 4px solid #6c757d;
+            cursor: not-allowed;
+        }
+
+        .disabled-card:hover {
+            transform: none;
+            box-shadow: 0 10px 40px rgba(0, 94, 131, 0.1);
+        }
+
+        .btn-disabled {
+            background: #6c757d;
+            color: white;
+            cursor: not-allowed;
+        }
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        .btn-admin {
+            background: #005e83;
+            color: white;
+        }
+
+        .btn-admin:hover {
+            background: #004a6a;
+            transform: translateY(-1px);
+        }
+
+        /* Ajuste para o botão logout existente */
+        .logout-btn {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -265,12 +355,31 @@
             
             <div class="user-section">
                 <div class="user-info">
-                    <div class="user-name">Welcome, {{ user.username }}!</div>
+                    <div class="user-name">Bem-vindo, {{ user.first_name }} {{ user.last_name }}!</div>
+                    <div class="user-role">
+                        {% if user.is_staff %}
+                            <small>Administrador</small>
+                        {% else %}
+                            <small>Usuário</small>
+                        {% endif %}
+                    </div>
                 </div>
-                <form method="post" action="{% url 'logout' %}" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="logout-btn">Logout</button>
-                </form>
+                
+                <div class="user-actions">
+                    <!-- Botão Trocar Senha -->
+                    <a href="{% url 'password_change' %}" class="btn btn-secondary btn-sm">Trocar Senha</a>
+                    
+                    <!-- Botão Admin (apenas para staff) -->
+                    {% if user.is_staff %}
+                        <a href="{% url 'admin:index' %}" class="btn btn-admin btn-sm" target="_blank">Admin</a>
+                    {% endif %}
+                    
+                    <!-- Botão Logout -->
+                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="logout-btn">Logout</button>
+                    </form>
+                </div>
             </div>
         </div>
     </nav>
@@ -278,29 +387,24 @@
     <div class="container">
         <!-- Welcome Section -->
         <div class="welcome-section">
-            <h1>Bem-vindo, {{ user.username }}!</h1>
             <p>TESOURARIA - GS INIMA BRASIL - SISTEMAS DE GESTÃO</p>
         </div>
 
+
+        
         <!-- Dashboard Grid -->
         <div class="dashboard-grid" style="margin-top: 20px;">
-            <div class="dashboard-card">
+            <a href="{% url 'lista_apolices' %}" class="dashboard-card card-link">
                 <h2><span class="icon">📝</span> Seguros</h2>
                 <p>Gerencie todas as apólices de seguros da empresa</p>
-                <a href="{% url 'lista_apolices' %}" class="btn btn-primary">Ver Todas as Apólices</a>
+            </a>
+
+            <div class="dashboard-card disabled-card">
+                <h2><span class="icon">🏢</span> Mútuos</h2>
+                <p>Gerencie os Mútuos</p>
+                <span class="btn btn-secondary">Disponível Em Breve</span>
             </div>
 
-            <div class="dashboard-card">
-                <h2><span class="icon">🏢</span> Empresas</h2>
-                <p>Gerencie as empresas seguradas</p>
-                <a href="#" class="btn">Gerenciar Empresas</a>
-            </div>
-
-            <div class="dashboard-card">
-                <h2><span class="icon">📊</span> Relatórios</h2>
-                <p>Relatórios e análises de seguros</p>
-                <a href="#" class="btn">Ver Relatórios</a>
-            </div>
         </div>
     </div>
 

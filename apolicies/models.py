@@ -45,7 +45,7 @@ class Apolice(models.Model):
     valor_premio = models.DecimalField(max_digits=15, decimal_places=2)
     moeda = models.CharField(max_length=3, default='BRL')
     segurado = models.ForeignKey(Companies, on_delete=models.PROTECT, related_name='apolices')
-    observacoes = models.TextField(blank=True, null=True)
+    observacoes = models.TextField(max_length=255, blank=True, null=True)
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
     pdf = models.FileField(upload_to='apolices_pdfs/', validators=[validate_pdf], blank=True, null=True)

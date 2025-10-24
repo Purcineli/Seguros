@@ -22,6 +22,7 @@ from .views import home, lista_apolices
 from django.conf.urls.static import static
 from django.conf import settings
 from . import views
+from django.views.generic import RedirectView
 
 
 # Admin headers
@@ -42,6 +43,10 @@ urlpatterns = [
     path('apolices/nova/', views.nova_apolice, name='nova_apolice'),
     path('apolices/editar/', views.editar_apolice, name='editar_apolice'),
     path('apolices/<int:apolice_id>/dados/', views.apolice_dados, name='apolice_dados'),
+    path('apolices/<int:apolice_id>/deletar/', views.deletar_apolice, name='deletar_apolice'),
+    path('accounts/password_change/', auth_views.PasswordChangeView.as_view(), name='password_change'),
+    path('accounts/password_change/done/', RedirectView.as_view(url='/'), name='password_change_done'),
+
 
     
     # If you have an accounts app with other views, include it like this:

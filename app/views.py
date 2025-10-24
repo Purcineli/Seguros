@@ -7,7 +7,9 @@ from decimal import Decimal
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
+from django.views.decorators.http import require_http_methods
+import pandas as pd
+from django.http import HttpResponse
 
  # ou de onde seu modelo está
 
@@ -18,6 +20,7 @@ def home(request):
 @login_required
 def lista_apolices(request):
     apolices = Apolice.objects.all().select_related('segurado', 'tipo_seguro')  # Adicionei tipo_seguro aqui
+
     
     # Filtros
     status_filter = request.GET.get('status')
@@ -209,3 +212,14 @@ def editar_apolice(request):
             messages.error(request, f'Erro ao atualizar apólice: {str(e)}')
     
     return redirect('lista_apolices')
+
+@require_http_methods(["DELETE"])
+def deletar_apolice(request, apolice_id):
+    try:
+        apolice = Apolice.objects.get(id=apolice_id)
+        apolice.delete()
+        return JsonResponse({'success': True})
+    except Apolice.DoesNotExist:
+        return JsonResponse({'error': 'Apólice não encontrada'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
