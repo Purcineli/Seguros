@@ -21,6 +21,7 @@ from django.contrib.auth import views as auth_views
 from .views import home, lista_apolices 
 from django.conf.urls.static import static
 from django.conf import settings
+from . import views
 
 
 # Admin headers
@@ -38,6 +39,10 @@ urlpatterns = [
     # Home page
     path('', home, name='home'),
     path('apolices/', lista_apolices, name='lista_apolices'),
+    path('apolices/nova/', views.nova_apolice, name='nova_apolice'),
+    path('apolices/editar/', views.editar_apolice, name='editar_apolice'),
+    path('apolices/<int:apolice_id>/dados/', views.apolice_dados, name='apolice_dados'),
+
     
     # If you have an accounts app with other views, include it like this:
     # path('accounts/', include('accounts.urls')),

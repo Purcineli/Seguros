@@ -11,7 +11,7 @@ class Companies(models.Model):
         return f"{self.codigo} - {self.nome}"
     
     class Meta:
-        verbose_name = "Company"
-        verbose_name_plural = "Companies"
+        verbose_name = "Empresa"
+        verbose_name_plural = "Empresas"
 
 

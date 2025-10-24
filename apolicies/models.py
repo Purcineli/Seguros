@@ -7,6 +7,23 @@ from datetime import date
 def validate_pdf(value):
     if not value.name.endswith('.pdf'):
         raise ValidationError('Apenas arquivos PDF são permitidos.')
+    
+class TiposSeguros(models.Model):
+    """Tipos de seguros disponíveis"""
+    id = models.AutoField(primary_key=True, editable=False)
+    nome = models.CharField(max_length=100, unique=True, verbose_name="Nome do Tipo")
+    descricao = models.TextField(blank=True, null=True, verbose_name="Descrição")
+    ativo = models.BooleanField(default=True, verbose_name="Ativo")
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Tipo de Seguro"
+        verbose_name_plural = "Tipos de Seguros"
+        ordering = ['nome']
+
+    def __str__(self):
+        return self.nome
 
 class Apolice(models.Model):
     """Apólice de seguro"""
@@ -20,7 +37,7 @@ class Apolice(models.Model):
     id = models.AutoField(primary_key=True, editable=False)
     numero = models.CharField(max_length=50, unique=True)
     seguradora = models.CharField(max_length=255)
-    tipo = models.CharField(max_length=100)
+    tipo_seguro = models.ForeignKey(TiposSeguros, on_delete=models.PROTECT, related_name='apolices', verbose_name="Tipo de Seguro")
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pendente')
     data_inicio = models.DateField()
     data_fim = models.DateField()
@@ -71,7 +88,11 @@ class Apolice(models.Model):
             except (ValueError, OSError):
                 # Log do erro se necessário
                 pass
-            
+
+    class Meta:
+        verbose_name = "Apólice de Seguro"
+        verbose_name_plural = "Apólices de Seguros"
+
     @property
     def dias_para_vencimento(self):
         """Calcula dias restantes para o vencimento"""

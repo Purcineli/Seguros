@@ -165,6 +165,147 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #005e83, #3ab0c8);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .close:hover {
+            opacity: 0.7;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-radius: 0 0 12px 12px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3ab0c8;
+        }
+
+        .form-group small {
+            color: #6c757d;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                margin: 5% auto;
+                width: 95%;
+            }
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -187,6 +328,226 @@
             background-color: #f8f9fa;
         }
 
+        /* Tabela Customizada */
+        .apolices-table {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 94, 131, 0.1);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .apolices-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .apolices-table th {
+            background: linear-gradient(135deg, #005e83, #3ab0c8);
+            color: white;
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: relative;
+            user-select: none;
+        }
+
+        .apolices-table th:hover {
+            background: linear-gradient(135deg, #004a6a, #2a9bb8);
+        }
+
+        .apolices-table th.sortable {
+            padding-right: 30px;
+        }
+
+        .sort-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .apolices-table th.sort-asc .sort-icon::after {
+            content: "↑";
+        }
+
+        .apolices-table th.sort-desc .sort-icon::after {
+            content: "↓";
+        }
+
+        .apolices-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        .apolices-table tbody tr {
+            transition: background-color 0.2s;
+        }
+
+        .apolices-table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .apolices-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Status badges */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-ativa {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-cancelada {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-vencida {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-pendente {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* Dias para vencimento */
+        .dias-vencimento {
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .vencido, .status-inativo {
+            background: #dc3545;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            display: inline-block;
+        }
+
+        .hoje {
+            background: #dc3545;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            display: inline-block;
+        }
+
+        .amanha {
+            background: #fd7e14;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            display: inline-block;
+        }
+
+        .proxima-semana {
+            background: #ffc107;
+            color: #212529;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            display: inline-block;
+        }
+
+        .proximo-mes {
+            background: #17a2b8;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            display: inline-block;
+        }
+
+        .normal {
+            background: #28a745;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            display: inline-block;
+        }
+
+        /* Valores */
+        .valor {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        /* Ações */
+        .actions {
+            text-align: center;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-view {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #138496;
+            transform: translateY(-1px);
+        }
+
+        .btn-disabled {
+            background: #6c757d;
+            color: white;
+            cursor: not-allowed;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state div {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            margin-bottom: 20px;
+        }
+
         .status-badge {
             padding: 4px 12px;
             border-radius: 20px;
@@ -200,6 +561,21 @@
             color: #155724;
         }
 
+        .btn-edit {
+            background: #ffc107;
+            color: #212529;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-edit:hover {
+            background: #e0a800;
+            transform: translateY(-1px);
+        }
         .status-cancelada {
             background: #f8d7da;
             color: #721c24;
@@ -281,6 +657,26 @@
             text-transform: uppercase;
             font-weight: 600;
         }
+        
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            color: #333;
+            transition: border-color 0.3s;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: #3ab0c8;
+        }
+
+        .form-group select option {
+            padding: 8px;
+        }
 
         @media (max-width: 768px) {
             .nav-container {
@@ -308,6 +704,136 @@
         }
     </style>
 </head>
+
+<script>
+// Função para abrir modal de NOVA apólice
+function abrirModal() {
+    document.getElementById('modalTitulo').textContent = 'Nova Apólice';
+    document.getElementById('modalSubmit').textContent = 'Salvar Apólice';
+    document.getElementById('apoliceForm').action = "{% url 'nova_apolice' %}";
+    document.getElementById('apolice_id').value = '';
+    
+    // Limpar formulário
+    document.getElementById('apoliceForm').reset();
+    document.getElementById('pdf-atual').innerHTML = '';
+    
+    document.getElementById('modalApolice').style.display = 'block';
+}
+
+// Função para abrir modal de EDIÇÃO
+function abrirModalEditar(apoliceId) {
+    document.getElementById('modalTitulo').textContent = 'Editar Apólice';
+    document.getElementById('modalSubmit').textContent = 'Atualizar Apólice';
+    document.getElementById('apoliceForm').action = "{% url 'editar_apolice' %}";
+    document.getElementById('apolice_id').value = apoliceId;
+    
+    // Buscar dados da apólice via AJAX
+    fetch(`/apolices/${apoliceId}/dados/`)
+        .then(response => response.json())
+        .then(data => {
+            // Preencher formulário com os dados
+            document.getElementById('numero').value = data.numero;
+            document.getElementById('seguradora').value = data.seguradora;
+            document.getElementById('tipo_seguro').value = data.tipo_seguro_id;
+            document.getElementById('segurado').value = data.segurado_id;
+            document.getElementById('status').value = data.status;
+            document.getElementById('data_inicio').value = data.data_inicio;
+            document.getElementById('data_fim').value = data.data_fim;
+            document.getElementById('valor_seguro').value = data.valor_seguro;
+            document.getElementById('valor_premio').value = data.valor_premio;
+            document.getElementById('moeda').value = data.moeda;
+            document.getElementById('observacoes').value = data.observacoes || '';
+            
+            // Mostrar PDF atual se existir
+            if (data.pdf) {
+                document.getElementById('pdf-atual').innerHTML = 
+                    `PDF atual: <a href="${data.pdf}" target="_blank">Visualizar</a>`;
+            } else {
+                document.getElementById('pdf-atual').innerHTML = 'Nenhum PDF anexado';
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao carregar dados:', error);
+            alert('Erro ao carregar dados da apólice');
+        });
+    
+    document.getElementById('modalApolice').style.display = 'block';
+}
+
+// Função para fechar modal
+function fecharModal() {
+    document.getElementById('modalApolice').style.display = 'none';
+}
+
+// Fechar modal clicando fora
+window.onclick = function(event) {
+    const modal = document.getElementById('modalApolice');
+    if (event.target === modal) {
+        fecharModal();
+    }
+}
+
+// Fechar modal com ESC
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        fecharModal();
+    }
+});
+</script>
+
+
+<script>
+// Ordenação da tabela
+document.addEventListener('DOMContentLoaded', function() {
+    const sortableHeaders = document.querySelectorAll('.sortable');
+    
+    // Obter parâmetros atuais da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentSort = urlParams.get('sort') || 'criado_em';
+    const currentOrder = urlParams.get('order') || 'desc';
+
+    // Atualizar UI com ordenação atual
+    function updateSortUI() {
+        sortableHeaders.forEach(header => {
+            header.classList.remove('sort-asc', 'sort-desc');
+            const sortIcon = header.querySelector('.sort-icon');
+            
+            if (header.dataset.sort === currentSort) {
+                header.classList.add(`sort-${currentOrder}`);
+                sortIcon.textContent = currentOrder === 'asc' ? '↑' : '↓';
+            } else {
+                sortIcon.textContent = '↕️';
+            }
+        });
+    }
+
+    sortableHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            const column = this.dataset.sort;
+            let newOrder = 'asc'; // Padrão é asc
+            
+            // Se clicar na mesma coluna, alternar a direção
+            if (currentSort === column) {
+                newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+            }
+            
+            // Criar novos parâmetros mantendo os filtros
+            const newParams = new URLSearchParams(window.location.search);
+            newParams.set('sort', column);
+            newParams.set('order', newOrder);
+            
+            console.log(`Ordenando por: ${column} - ${newOrder}`);
+            
+            // Recarregar a página com novos parâmetros
+            window.location.href = `${window.location.pathname}?${newParams.toString()}`;
+        });
+    });
+
+    // Inicializar UI
+    updateSortUI();
+});
+</script>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar">
@@ -330,7 +856,112 @@
         <!-- Cabeçalho -->
         <div class="page-header">
             <h1 class="page-title">Gestão de Apólices</h1>
-            <a href="#" class="btn btn-primary">Nova Apólice</a>
+            {% if pode_adicionar %}
+                <button type="button" class="btn btn-primary" onclick="abrirModal()">Nova Apólice</button>
+            {% endif %}
+        </div>
+
+        <!-- Modal para Nova/Editar Apólice -->
+        <div id="modalApolice" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitulo">Nova Apólice</h2>
+                    <span class="close" onclick="fecharModal()">&times;</span>
+                </div>
+                <form method="post" action="" id="apoliceForm" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" id="apolice_id" name="apolice_id" value="">
+                    
+                    <div class="modal-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="numero">Número da Apólice *</label>
+                                <input type="text" id="numero" name="numero" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="seguradora">Seguradora *</label>
+                                <input type="text" id="seguradora" name="seguradora" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="tipo_seguro">Tipo de Seguro *</label>
+                                <select id="tipo_seguro" name="tipo_seguro" required>
+                                    <option value="">Selecione o tipo de seguro</option>
+                                    {% for tipo in tipos_seguros %}
+                                        <option value="{{ tipo.id }}">{{ tipo.nome }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="segurado">Segurado *</label>
+                                <select id="segurado" name="segurado" required>
+                                    <option value="">Selecione o segurado</option>
+                                    {% for company in companies %}
+                                        <option value="{{ company.id }}">{{ company.nome }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="status">Status *</label>
+                                <select id="status" name="status" required>
+                                    <option value="">Selecione o status</option>
+                                    {% for value, label in status_choices %}
+                                        <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="data_inicio">Data de Início *</label>
+                                <input type="date" id="data_inicio" name="data_inicio" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="data_fim">Data de Fim *</label>
+                                <input type="date" id="data_fim" name="data_fim" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="valor_seguro">Valor do Seguro *</label>
+                                <input type="number" id="valor_seguro" name="valor_seguro" step="0.01" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="valor_premio">Valor do Prêmio *</label>
+                                <input type="number" id="valor_premio" name="valor_premio" step="0.01" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="moeda">Moeda</label>
+                                <select id="moeda" name="moeda">
+                                    <option value="BRL" selected>BRL - Real Brasileiro</option>
+                                    <option value="USD">USD - Dólar Americano</option>
+                                    <option value="EUR">EUR - Euro</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="observacoes">Observações</label>
+                                <textarea id="observacoes" name="observacoes" rows="3"></textarea>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="pdf">PDF da Apólice</label>
+                                <input type="file" id="pdf" name="pdf" accept=".pdf">
+                                <small>Apenas arquivos PDF são permitidos</small>
+                                <div id="pdf-atual" style="margin-top: 5px; font-size: 12px; color: #666;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="fecharModal()">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" id="modalSubmit">Salvar Apólice</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <!-- Estatísticas -->
@@ -399,16 +1030,46 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Número</th>
-                            <th>Seguradora</th>
-                            <th>Tipo</th>
-                            <th>Segurado</th>
-                            <th>Status</th>
-                            <th>Início</th>
-                            <th>Fim</th>
-                            <th>Dias para Vencer</th>
-                            <th>Valor Seguro</th>
-                            <th>Prêmio</th>
+                            <th class="sortable" data-sort="numero">
+                                Número 
+                                <span class="sort-icon">↕️</span>
+                            </th>
+                            <th class="sortable" data-sort="seguradora">
+                                Seguradora 
+                                <span class="sort-icon">↕️</span>
+                            </th>
+                            <th class="sortable" data-sort="tipo">
+                                Tipo 
+                                <span class="sort-icon">↕️</span>
+                            </th>
+                            <th class="sortable" data-sort="segurado">
+                                Segurado 
+                                <span class="sort-icon">↕️</span>
+                            </th>
+                            <th class="sortable" data-sort="status">
+                                Status 
+                                <span class="sort-icon">↕️</span>
+                            </th>
+                            <th class="sortable" data-sort="data_inicio">
+                                Início 
+                                <span class="sort-icon">↕️</span>
+                            </th>
+                            <th class="sortable" data-sort="data_fim">
+                                Fim 
+                                <span class="sort-icon">↕️</span>
+                            </th>
+                            <th class="sortable" data-sort="dias_vencimento">
+                                Dias para Vencer 
+                                <span class="sort-icon">↕️</span>
+                            </th>
+                            <th class="sortable" data-sort="valor_seguro">
+                                Valor Seguro 
+                                <span class="sort-icon">↕️</span>
+                            </th>
+                            <th class="sortable" data-sort="valor_premio">
+                                Prêmio 
+                                <span class="sort-icon">↕️</span>
+                            </th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -417,7 +1078,7 @@
                         <tr>
                             <td><strong>{{ apolice.numero }}</strong></td>
                             <td>{{ apolice.seguradora }}</td>
-                            <td>{{ apolice.tipo }}</td>
+                            <td>{{ apolice.tipo_seguro.nome }}</td>
                             <td>{{ apolice.segurado }}</td>
                             <td>
                                 <span class="status-badge status-{{ apolice.status }}">
@@ -447,14 +1108,22 @@
                                     {% endwith %}
                                 {% endif %}
                             </td>
-                            <td class="valor">R$ {{ apolice.valor_seguro }}</td>
-                            <td class="valor">R$ {{ apolice.valor_premio }}</td>
+                            <td class="valor">R$ {{ apolice.valor_seguro_fmt }}</td>
+                            <td class="valor">R$ {{ apolice.valor_premio_fmt }}</td>
                             <td class="actions">
                                 <div style="display: flex; gap: 5px; flex-wrap: wrap;">
                                     {% if apolice.pdf %}
                                         <a href="{{ apolice.pdf.url }}" target="_blank" class="btn btn-sm btn-view" title="Abrir PDF">👀 Ver</a>
                                     {% else %}
                                         <span class="btn btn-sm btn-disabled">Sem PDF</span>
+                                    {% endif %}
+                                    
+                                    {% if pode_adicionar %}
+                                        <button type="button" class="btn btn-sm btn-edit" 
+                                                onclick="abrirModalEditar('{{ apolice.id }}')" 
+                                                title="Editar Apólice">
+                                            ✏️ Editar
+                                        </button>
                                     {% endif %}
                                 </div>
                             </td>
@@ -467,7 +1136,9 @@
                     <div>📄</div>
                     <h3>Nenhuma apólice encontrada</h3>
                     <p>Não há apólices cadastradas no sistema.</p>
-                    <a href="#" class="btn btn-primary" style="margin-top: 15px;">Cadastrar Primeira Apólice</a>
+                    {% if pode_adicionar %}
+                        <button type="button" class="btn btn-primary" onclick="abrirModal()" style="margin-top: 15px;">Cadastrar Primeira Apólice</button>
+                    {% endif %}
                 </div>
             {% endif %}
         </div>
