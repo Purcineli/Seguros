@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - GS INIMA BRASIL</title>
+    {% load static %}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Myriad Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #005e83 0%, #3ab0c8 100%);
+            min-height: 100vh;
+            color: #050505;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 0;
+            box-shadow: 0 4px 20px rgba(0, 94, 131, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid #658d3c;
+        }
+
+        .welcome-section {
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .welcome-section h1 {
+            color: white;
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .welcome-section p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+        }
+
+        .navbar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            height: 50px;
+            width: auto;
+        }
+
+        .welcome-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #cc1249;
+            letter-spacing: -0.02em;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-size: 14px;
+            color: #3b06b6;
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: #9a9899;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        .logout-btn:active {
+            transform: translateY(0);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 94, 131, 0.1);
+            margin-bottom: 30px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .dashboard-header h1 {
+            color: #005e83;
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            letter-spacing: -0.02em;
+        }
+
+        .dashboard-header p {
+            color: #9a9899;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            animation: fadeInUp 0.6s ease-out 0.2s backwards;
+        }
+
+        .dashboard-card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 94, 131, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid #3ab0c8;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(0, 94, 131, 0.15);
+        }
+
+        .dashboard-card h2 {
+            color: #005e83;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dashboard-card p {
+            color: #9a9899;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #005e83, #3ab0c8);
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #658d3c;
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-content {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px 20px;
+            }
+
+            .logo-section {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .user-section {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .dashboard-header {
+                padding: 24px;
+            }
+
+            .dashboard-header h1 {
+                font-size: 24px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo-section">
+                <img src="{% static 'images/GS_InimaBrasil_hor_Color.png' %}" alt="GS INIMA Brasil Logo" class="logo">
+            </div>
+            
+            <div class="user-section">
+                <div class="user-info">
+                    <div class="user-name">Welcome, {{ user.username }}!</div>
+                </div>
+                <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h1>Bem-vindo, {{ user.username }}!</h1>
+            <p>TESOURARIA - GS INIMA BRASIL - SISTEMAS DE GESTÃO</p>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid" style="margin-top: 20px;">
+            <div class="dashboard-card">
+                <h2><span class="icon">📝</span> Seguros</h2>
+                <p>Gerencie todas as apólices de seguros da empresa</p>
+                <a href="{% url 'lista_apolices' %}" class="btn btn-primary">Ver Todas as Apólices</a>
+            </div>
+
+            <div class="dashboard-card">
+                <h2><span class="icon">🏢</span> Empresas</h2>
+                <p>Gerencie as empresas seguradas</p>
+                <a href="#" class="btn">Gerenciar Empresas</a>
+            </div>
+
+            <div class="dashboard-card">
+                <h2><span class="icon">📊</span> Relatórios</h2>
+                <p>Relatórios e análises de seguros</p>
+                <a href="#" class="btn">Ver Relatórios</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Confirm logout
+        document.querySelector('.logout-btn').addEventListener('click', function(e) {
+            if (!confirm('Are you sure you want to logout?')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>

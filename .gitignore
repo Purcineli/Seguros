@@ -1,0 +1,67 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Django / SQLite
+db.sqlite3
+*.log
+*.pot
+*.pyc
+
+# Environment variables
+.env
+*.env
+
+# IDE / Editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Static and media files (generated content)
+staticfiles/
+media/
+
+# Pip / Dependencies
+*.egg-info/
+.eggs/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Build / Distribution
+build/
+dist/
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Coverage / Test
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
