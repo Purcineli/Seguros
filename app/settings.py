@@ -139,3 +139,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'home'    # After login, go to home
 LOGOUT_REDIRECT_URL = 'login'  # After logout, go to login page
 LOGIN_URL = 'login'            # Where to redirect when login is required
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://jimffh6ke.localto.net',
+    'http://localhost:8000',  # Keep your local development
+    'http://127.0.0.1:8000',  # Keep your local development
+]

@@ -357,8 +357,10 @@
                 <div class="user-info">
                     <div class="user-name">Bem-vindo, {{ user.first_name }} {{ user.last_name }}!</div>
                     <div class="user-role">
-                        {% if user.is_staff %}
-                            <small>Administrador</small>
+                        {% if user.is_superuser %}
+                            <small>Adminstrador</small>                      
+                        {% elif user.is_staff %}
+                            <small>Equipe</small>
                         {% else %}
                             <small>Usuário</small>
                         {% endif %}
@@ -370,7 +372,7 @@
                     <a href="{% url 'password_change' %}" class="btn btn-secondary btn-sm">Trocar Senha</a>
                     
                     <!-- Botão Admin (apenas para staff) -->
-                    {% if user.is_staff %}
+                    {% if user.is_superuser %}
                         <a href="{% url 'admin:index' %}" class="btn btn-admin btn-sm" target="_blank">Admin</a>
                     {% endif %}
                     

@@ -3,6 +3,7 @@ from companies.models import Companies
 from django.core.exceptions import ValidationError
 import os
 from datetime import date
+from django.utils import timezone
 
 def validate_pdf(value):
     if not value.name.endswith('.pdf'):
@@ -51,7 +52,7 @@ class Apolice(models.Model):
     pdf = models.FileField(upload_to='apolices_pdfs/', validators=[validate_pdf], blank=True, null=True)
 
     def __str__(self):
-        return f"Apolice {self.numero} - {self.tipo} - {self.segurado}"
+        return f"Apolice {self.numero} - {self.tipo_seguro} - {self.segurado}"
     
     def save(self, *args, **kwargs):
         # Para updates, verifica mudanças no campo pdf
@@ -105,6 +106,28 @@ class Apolice(models.Model):
         
         return (self.data_fim - hoje).days
 
+    def check_and_update_status(self):
+        """Check if apolice is expired and update status"""
+        if self.data_fim and self.data_fim < timezone.now().date():
+            if self.status in ['ativa', 'pendente']:
+                self.status = 'vencida'
+                self.save()
+                return True
+        return False
+    
+    @property
+    def is_expired(self):
+        """Check if apolice is expired without saving"""
+        if self.data_fim and self.data_fim < timezone.now().date():
+            return True
+        return False
+    
+    def save(self, *args, **kwargs):
+        """Auto-check expiration on save"""
+        if self.data_fim and self.data_fim < timezone.now().date():
+            if self.status in ['ativa', 'pendente']:
+                self.status = 'vencida'
+        super().save(*args, **kwargs)
 
 
 

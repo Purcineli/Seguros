@@ -176,12 +176,21 @@
     }
 
     .btn-row {
-    display: flex;
-    flex-direction: row;
-    gap: 5px;
-    flex-wrap: nowrap; /* impede quebra de linha */
-    overflow-x: auto;   /* permite rolagem horizontal se necessário */
-    align-items: center;
+        display: flex;
+        gap: 4px;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: center;
+        min-height: 100%;
+    }
+
+        /* Make buttons equal height */
+    .btn-row .btn-sm {
+        height: 32px;
+        min-height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
 
@@ -405,11 +414,10 @@
         white-space: nowrap;
     }
 
+    /* Ensure action cell has consistent height */
     .actions {
-        display: flex;
-        gap: 5px;
-        flex-wrap: wrap;
-        justify-content: center;
+        vertical-align: middle !important;
+        height: 1px; /* Force consistent height */
     }
 
     /* ===== TOOLTIP ===== */
@@ -633,10 +641,275 @@
         box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
     }
 
+    .tooltip-container {
+        position: relative;
+        display: inline-block;
+        cursor: help;
+        word-wrap: break-word;
+        word-break: break-word;
+        white-space: normal;
+        max-width: 200px; /* Adjust as needed */
+    }
+
+    .tooltip-fixo {
+        word-wrap: break-word;
+        word-break: break-word;
+        white-space: normal;
+        display: inline-block;
+        max-width: 100%;
+    }
+
+    .dias-vencimento {
+        font-size: 12px !important;
+        min-width: 80px !important;
+        max-width: 80px !important;
+    }
+
+    .dias-vencimento span {
+        font-size: 11px !important;
+        padding: 2px 6px !important;
+    }
+
+    .tooltip-container {
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 100%;
+        cursor: help;
+    }
+
+    .tooltip-fixo {
+        display: block;
+        width: 100%;
+        height: 100%;
+        padding: 8px 0;
+    }
+
+    /* Tooltip styles */
+    #observacoes-tooltip {
+        position: fixed;
+        display: none;
+        width: 300px;
+        background: #2d3748;
+        color: white;
+        padding: 12px;
+        border-radius: 6px;
+        font-size: 14px;
+        line-height: 1.4;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        z-index: 10000;
+        border: 1px solid #4a5568;
+    }
+
+    #observacoes-tooltip::after {
+        content: '';
+        position: absolute;
+        top: 10px;
+        left: -12px;
+        border-width: 6px;
+        border-style: solid;
+        border-color: transparent #2d3748 transparent transparent;
+    }
+
+    .pagination-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .items-per-page select {
+        padding: 8px 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    .page-info {
+        font-weight: 600;
+        color: #555;
+    }
+
+    .pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        gap: 5px;
+    }
+
+    .page-link {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #007bff;
+        transition: all 0.3s;
+    }
+
+    .page-link:hover {
+        background: #f8f9fa;
+    }
+
+    .page-link.current {
+        background: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+
+
+    .alert {
+        padding: 12px 20px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        border: 1px solid transparent;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+
+    .alert-error, .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+    }
+
+    .alert-warning {
+        background-color: #fff3cd;
+        border-color: #ffeaa7;
+        color: #856404;
+    }
+
+    .alert-info {
+        background-color: #d1ecf1;
+        border-color: #bee5eb;
+        color: #0c5460;
+    }
+
+    .close {
+        float: right;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1;
+        color: #000;
+        text-shadow: 0 1px 0 #fff;
+        opacity: 0.5;
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+    }
+
+    .close:hover {
+        opacity: 0.75;
+    }    
     </style>
 </head>
 
 <script>
+
+
+// Auto-dismiss alerts after 5 seconds
+document.addEventListener('DOMContentLoaded', function() {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            if (alert.parentElement) {
+                alert.style.opacity = '0';
+                setTimeout(() => {
+                    if (alert.parentElement) {
+                        alert.parentElement.removeChild(alert);
+                    }
+                }, 300);
+            }
+        }, 5000);
+    });
+
+    // Manual dismiss
+    document.querySelectorAll('.alert .close').forEach(closeBtn => {
+        closeBtn.addEventListener('click', function() {
+            const alert = this.closest('.alert');
+            if (alert && alert.parentElement) {
+                alert.parentElement.removeChild(alert);
+            }
+        });
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    let tooltip = document.getElementById('observacoes-tooltip');
+    if (!tooltip) {
+        tooltip = document.createElement('div');
+        tooltip.id = 'observacoes-tooltip';
+        document.body.appendChild(tooltip);
+    }
+
+    let currentElement = null;
+
+    // **CHANGED: Use viewport-relative positioning**
+    function updateTooltipPosition(element) {
+        if (!element || tooltip.style.display === 'none') return;
+        
+        const rect = element.getBoundingClientRect();
+        // Use fixed positioning relative to viewport (no scrollX/scrollY)
+        tooltip.style.left = `${rect.right + 10}px`;
+        tooltip.style.top = `${rect.top}px`;
+    }
+
+    document.querySelectorAll('.tooltip-fixo').forEach(element => {
+        element.addEventListener('mouseenter', function(e) {
+            currentElement = this;
+            const observacoes = this.getAttribute('data-observacoes');
+            
+            tooltip.innerHTML = `<strong>Observações:</strong><br>${observacoes}`;
+            tooltip.style.display = 'block';
+            
+            updateTooltipPosition(this);
+        });
+        
+        element.addEventListener('mouseleave', function() {
+            currentElement = null;
+            setTimeout(() => {
+                if (!tooltip.matches(':hover')) {
+                    tooltip.style.display = 'none';
+                }
+            }, 100);
+        });
+
+        // **IMPORTANT: Update on mouse movement**
+        element.addEventListener('mousemove', function() {
+            if (currentElement === this) {
+                updateTooltipPosition(this);
+            }
+        });
+    });
+
+    // Update on scroll and resize
+    function updateOnInteraction() {
+        if (currentElement) {
+            updateTooltipPosition(currentElement);
+        }
+    }
+
+    window.addEventListener('scroll', updateOnInteraction);
+    window.addEventListener('resize', updateOnInteraction);
+
+    tooltip.addEventListener('mouseenter', function() {
+        tooltip.style.display = 'block';
+    });
+    
+    tooltip.addEventListener('mouseleave', function() {
+        tooltip.style.display = 'none';
+        currentElement = null;
+    });
+});
 
 function exportToExcel() {
     // Get filters from current URL parameters instead of form inputs
@@ -704,85 +977,7 @@ function getCookie(name) {
 }
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Create tooltip element
-    let tooltip = document.getElementById('observacoes-tooltip');
-    if (!tooltip) {
-        tooltip = document.createElement('div');
-        tooltip.id = 'observacoes-tooltip';
-        document.body.appendChild(tooltip);
-    }
 
-    // Add event listeners
-    document.querySelectorAll('.tooltip-fixo').forEach(element => {
-        element.addEventListener('mouseenter', function(e) {
-            const observacoes = this.getAttribute('data-observacoes');
-            
-            // Set tooltip content
-            tooltip.innerHTML = `<strong>Observações:</strong><br>${observacoes}`;
-            
-            // Position tooltip to the RIGHT of the element (avoids mouse interference)
-            const rect = this.getBoundingClientRect();
-            tooltip.style.left = `${rect.right + window.scrollX + 10}px`;
-            tooltip.style.top = `${rect.top + window.scrollY}px`;
-            
-            // Show tooltip
-            tooltip.style.display = 'block';
-        });
-        
-        element.addEventListener('mouseleave', function() {
-            // Small delay to allow moving to tooltip
-            setTimeout(() => {
-                if (!tooltip.matches(':hover')) {
-                    tooltip.style.display = 'none';
-                }
-            }, 100);
-        });
-        
-        // Allow hovering over tooltip itself
-        tooltip.addEventListener('mouseenter', function() {
-            tooltip.style.display = 'block';
-        });
-        
-        tooltip.addEventListener('mouseleave', function() {
-            tooltip.style.display = 'none';
-        });
-    });
-});
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Move all tooltips to body level to escape container clipping
-    const tooltips = document.querySelectorAll('.tooltip-container');
-    
-    tooltips.forEach(container => {
-        const tooltip = container.querySelector('.tooltip-text');
-        if (tooltip) {
-            // Move tooltip to body
-            document.body.appendChild(tooltip);
-            
-            // Position tooltip on hover
-            container.addEventListener('mouseenter', function(e) {
-                const rect = container.getBoundingClientRect();
-                const scrollY = window.scrollY;
-                
-                // Position above element
-                tooltip.style.position = 'fixed';
-                tooltip.style.left = (rect.left + (rect.width / 2)) + 'px';
-                tooltip.style.top = (rect.top + scrollY - tooltip.offsetHeight - 10) + 'px';
-                tooltip.style.transform = 'translateX(-50%)';
-                
-                tooltip.style.visibility = 'visible';
-                tooltip.style.opacity = '1';
-            });
-            
-            container.addEventListener('mouseleave', function() {
-                tooltip.style.visibility = 'hidden';
-                tooltip.style.opacity = '0';
-            });
-        }
-    });
-});
 // Função para abrir modal de NOVA apólice
 function abrirModal() {
     document.getElementById('modalTitulo').textContent = 'Nova Apólice';
@@ -856,10 +1051,7 @@ document.addEventListener('keydown', function(event) {
         fecharModal();
     }
 });
-</script>
 
-
-<script>
 // Ordenação da tabela
 document.addEventListener('DOMContentLoaded', function() {
     const sortableHeaders = document.querySelectorAll('.sortable');
@@ -909,9 +1101,178 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar UI
     updateSortUI();
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const dataInicio = document.getElementById('data_inicio');
+    const dataFim = document.getElementById('data_fim');
+    const valorpremio = document.getElementById('valor_premio');
+    const valorseguro = document.getElementById('valor_seguro');
+    const submitButton = document.getElementById('modalSubmit');
+    
+    function validateDates() {
+        let errors = [];
+        
+        // Validate dates
+        if (dataInicio.value && dataFim.value) {
+            const inicio = new Date(dataInicio.value);
+            const fim = new Date(dataFim.value);
+            
+            if (fim < inicio) {
+                dataFim.style.borderColor = '#dc3545';
+                dataFim.style.boxShadow = '0 0 0 2px rgba(220, 53, 69, 0.25)';
+                errors.push('Data de fim anterior à data de início');
+            } else {
+                dataFim.style.borderColor = '#28a745';
+                dataFim.style.boxShadow = '0 0 0 2px rgba(40, 167, 69, 0.25)';
+            }
+        } else {
+            dataFim.style.borderColor = '';
+            dataFim.style.boxShadow = '';
+        }
+        
+        // Validate valor_premio
+        if (valorpremio.value) {
+            const premio = parseFloat(valorpremio.value);
+            if (premio < 1) {
+                valorpremio.style.borderColor = '#dc3545';
+                valorpremio.style.boxShadow = '0 0 0 2px rgba(220, 53, 69, 0.25)';
+                errors.push('Valor do prêmio deve ser maior ou igual a 1');
+            } else {
+                valorpremio.style.borderColor = '#28a745';
+                valorpremio.style.boxShadow = '0 0 0 2px rgba(40, 167, 69, 0.25)';
+            }
+        } else {
+            valorpremio.style.borderColor = '';
+            valorpremio.style.boxShadow = '';
+        }
+        
+        // Validate valor_seguro
+        if (valorseguro.value) {
+            const seguro = parseFloat(valorseguro.value);
+            if (seguro < 1) {
+                valorseguro.style.borderColor = '#dc3545';
+                valorseguro.style.boxShadow = '0 0 0 2px rgba(220, 53, 69, 0.25)';
+                errors.push('Valor do seguro deve ser maior ou igual a 1');
+            } else {
+                valorseguro.style.borderColor = '#28a745';
+                valorseguro.style.boxShadow = '0 0 0 2px rgba(40, 167, 69, 0.25)';
+            }
+        } else {
+            valorseguro.style.borderColor = '';
+            valorseguro.style.boxShadow = '';
+        }
+        
+        // Update submit button state and tooltip
+        if (errors.length > 0) {
+            submitButton.disabled = true;
+            submitButton.style.opacity = '0.6';
+            submitButton.style.cursor = 'not-allowed';
+            submitButton.title = 'Erros: ' + errors.join(', ');
+        } else {
+            submitButton.disabled = false;
+            submitButton.style.opacity = '1';
+            submitButton.style.cursor = 'pointer';
+            submitButton.title = 'Salvar Apólice';
+        }
+        
+        return errors.length === 0;
+    }
+    
+    // Add event listeners
+    dataInicio.addEventListener('change', validateDates);
+    dataFim.addEventListener('change', validateDates);
+    valorpremio.addEventListener('input', validateDates);
+    valorseguro.addEventListener('input', validateDates);
+    
+    // Form submission
+    document.getElementById('apoliceForm').addEventListener('submit', function(e) {
+        if (!validateDates()) {
+            e.preventDefault();
+        }
+    });
+    
+    // Initial validation
+    validateDates();
+});
+
+// Function to update items per page
+function updateItemsPerPage(value) {
+    const params = new URLSearchParams(window.location.search);
+    params.set('items_per_page', value);
+    params.delete('page'); // Go back to first page
+    
+    window.location.href = '?' + params.toString();
+}
+
+// Add this JavaScript for sorting
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('th.sortable').forEach(header => {
+        header.addEventListener('click', function() {
+            const sortField = this.dataset.sort;
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentSort = urlParams.get('sort');
+            const currentOrder = urlParams.get('order');
+            
+            let newOrder = 'asc';
+            if (currentSort === sortField && currentOrder === 'asc') {
+                newOrder = 'desc';
+            }
+            
+            // Update parameters
+            urlParams.set('sort', sortField);
+            urlParams.set('order', newOrder);
+            urlParams.delete('page'); // Go to first page when sorting
+            
+            window.location.href = '?' + urlParams.toString();
+        });
+    });
+    
+    // Add visual indicators for current sort
+    function updateSortIndicators() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentSort = urlParams.get('sort');
+        const currentOrder = urlParams.get('order');
+        
+        document.querySelectorAll('th.sortable').forEach(header => {
+            const sortIcon = header.querySelector('.sort-icon');
+            if (header.dataset.sort === currentSort) {
+                header.style.backgroundColor = '#f8f9fa';
+                if (currentOrder === 'asc') {
+                    sortIcon.textContent = '↑';
+                    sortIcon.style.color = '#007bff';
+                } else if (currentOrder === 'desc') {
+                    sortIcon.textContent = '↓';
+                    sortIcon.style.color = '#007bff';
+                }
+            } else {
+                header.style.backgroundColor = '';
+                sortIcon.textContent = '↕️';
+                sortIcon.style.color = '#666';
+            }
+        });
+    }
+    
+    // **MAKE SURE TO CALL THE FUNCTION**
+    updateSortIndicators();
+});
+
 </script>
 
 <body>
+<!-- Display Messages -->
+    {% if messages %}
+    <div class="messages-container" style="margin-bottom: 20px;">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-container">
@@ -952,7 +1313,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="modal-body">
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="numero">Número da Apólice *</label>
+                                <label for="numero">Identificação da Apólice *</label>
                                 <input type="text" id="numero" name="numero" required>
                             </div>
                             
@@ -1101,7 +1462,24 @@ document.addEventListener('DOMContentLoaded', function() {
             </form>
         </div>
 
+        <!-- Pagination Controls -->
+        <div class="pagination-controls" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <!-- Items per page selector -->
+        <div class="items-per-page">
+            <label for="items_per_page" style="margin-right: 10px; font-weight: 600;">Itens por página:</label>
+            <select id="items_per_page" name="items_per_page" onchange="updateItemsPerPage(this.value)" style="padding: 8px 12px; border: 2px solid #e0e0e0; border-radius: 6px;">
+                <option value="10" {% if request.GET.items_per_page == '10' or not request.GET.items_per_page %}selected{% endif %}>10</option>
+                <option value="25" {% if request.GET.items_per_page == '25' or not request.GET.items_per_page %}selected{% endif %}>25</option>
+                <option value="50" {% if request.GET.items_per_page == '50' %}selected{% endif %}>50</option>
+                <option value="100" {% if request.GET.items_per_page == '100' %}selected{% endif %}>100</option>
+            </select>
+        </div>
 
+            <!-- Page info -->
+            <div class="page-info" style="font-weight: 600; color: #555;">
+                Mostrando {{ page_obj.start_index }} - {{ page_obj.end_index }} de {{ paginator.count }} apólices
+            </div>
+        </div>
         
         <!-- Tabela de Apólices -->
         <div class="apolices-table">
@@ -1110,7 +1488,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <thead>
                         <tr>
                             <th class="sortable" data-sort="numero">
-                                Número 
+                                Identificação 
                                 <span class="sort-icon">↕️</span>
                             </th>
                             <th class="sortable" data-sort="seguradora">
@@ -1156,11 +1534,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         {% for apolice in apolices %}
                         <tr>
                             <td>
-                            <div class="tooltip-container">
-                                <strong class="tooltip-fixo" data-observacoes="{{ apolice.observacoes|default:'Sem observações' }}">
-                                {{ apolice.numero }}
-                                </strong>
-                            </div>
+                                <div class="tooltip-container" style="width: 100%; height: 100%;">
+                                    <strong class="tooltip-fixo" data-observacoes="{{ apolice.observacoes|default:'Sem observações' }}" style="display: block; width: 100%; height: 100%; padding: 8px 0;">
+                                        {{ apolice.numero }}
+                                    </strong>
+                                </div>
                             </td>
 
                             <td>{{ apolice.seguradora }}</td>
@@ -1208,7 +1586,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <button type="button" class="btn btn-sm btn-edit" 
                                         onclick="abrirModalEditar('{{ apolice.id }}')" 
                                         title="Editar Apólice">✏️</button>
-
+                            {% endif %}
+                            {% if pode_deletar %}
                                 <button type="button" class="btn btn-sm btn-delete" 
                                         onclick="deletarApolice('{{ apolice.id }}')" 
                                         title="Excluir Apólice">🗑️</button>
@@ -1233,5 +1612,63 @@ document.addEventListener('DOMContentLoaded', function() {
             {% endif %}
         </div>
     </div>
+
+    <!-- Pagination Navigation - Fixed -->
+    {% if page_obj.has_other_pages %}
+    <div class="pagination-nav" style="display: flex; justify-content: center; margin-top: 30px;">
+        <nav aria-label="Page navigation">
+            <ul class="pagination" style="display: flex; list-style: none; padding: 0; margin: 0; gap: 5px;">
+                <!-- Previous page -->
+                {% if page_obj.has_previous %}
+                    <li>
+                        <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                        class="page-link">
+                            « Anterior
+                        </a>
+                    </li>
+                {% else %}
+                    <li>
+                        <span class="page-link disabled">« Anterior</span>
+                    </li>
+                {% endif %}
+
+                <!-- Page numbers -->
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li>
+                            <span class="page-link current">{{ num }}</span>
+                        </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li>
+                            <a href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                            class="page-link">
+                                {{ num }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Next page -->
+                {% if page_obj.has_next %}
+                    <li>
+                        <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                        class="page-link">
+                            Próxima »
+                        </a>
+                    </li>
+                {% else %}
+                    <li>
+                        <span class="page-link disabled">Próxima »</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+
+
+
+
 </body>
+
 </html>

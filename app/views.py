@@ -10,6 +10,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import pandas as pd
 from django.http import HttpResponse
+from datetime import datetime
+from django.contrib.auth.models import Permission
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
  # ou de onde seu modelo está
 
@@ -21,82 +24,7 @@ def home(request):
 def lista_apolices(request):
     apolices = Apolice.objects.all().select_related('segurado', 'tipo_seguro')
 
-    # Filtros
-    numero_filter = request.GET.get('numero')
-    if numero_filter:
-        apolices = apolices.filter(numero__icontains=numero_filter)
-    
-    seguradora_filter = request.GET.get('seguradora')
-    if seguradora_filter:
-        apolices = apolices.filter(seguradora__icontains=seguradora_filter)
-    
-    tipo_seguro_filter = request.GET.get('tipo_seguro')
-    if tipo_seguro_filter:
-        apolices = apolices.filter(tipo_seguro_id=tipo_seguro_filter)
-    
-    status_filter = request.GET.get('status')
-    if status_filter:
-        apolices = apolices.filter(status=status_filter)
-    
-    segurado_filter = request.GET.get('segurado')
-    if segurado_filter:
-        apolices = apolices.filter(segurado_id=segurado_filter)
-    
-    data_inicio_filter = request.GET.get('data_inicio')
-    if data_inicio_filter:
-        apolices = apolices.filter(data_inicio__gte=data_inicio_filter)
-    
-    data_fim_filter = request.GET.get('data_fim')
-    if data_fim_filter:
-        apolices = apolices.filter(data_fim__lte=data_fim_filter)
-
-    # EXPORT TO EXCEL - Use the FILTERED queryset
-    if request.GET.get('export') == 'xlsx':
-        # Create DataFrame with FILTERED data
-        data = []
-        for apolice in apolices:  # This uses the filtered queryset
-            data.append({
-                'Número': apolice.numero,
-                'Seguradora': apolice.seguradora,
-                'Tipo Seguro': apolice.tipo_seguro.nome if apolice.tipo_seguro else '',
-                'Segurado': apolice.segurado.nome if apolice.segurado else '',
-                'Status': apolice.get_status_display(),
-                'Data Início': apolice.data_inicio.strftime('%d/%m/%Y') if apolice.data_inicio else '',
-                'Data Fim': apolice.data_fim.strftime('%d/%m/%Y') if apolice.data_fim else '',
-                'Valor Seguro': str(apolice.valor_seguro),
-                'Valor Prêmio': str(apolice.valor_premio),
-                'Moeda': apolice.moeda,
-                'Observações': apolice.observacoes or '',
-                'Criado em': apolice.criado_em.strftime('%d/%m/%Y %H:%M') if apolice.criado_em else '',
-            })
-        
-        df = pd.DataFrame(data)
-        
-        # Create HTTP response with Excel file
-        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        response['Content-Disposition'] = 'attachment; filename="apolices.xlsx"'
-        
-        with pd.ExcelWriter(response, engine='openpyxl') as writer:
-            df.to_excel(writer, sheet_name='Apólices', index=False)
-            
-            # Auto-adjust column widths
-            worksheet = writer.sheets['Apólices']
-            for column in worksheet.columns:
-                max_length = 0
-                column_letter = column[0].column_letter
-                for cell in column:
-                    try:
-                        if len(str(cell.value)) > max_length:
-                            max_length = len(str(cell.value))
-                    except:
-                        pass
-                adjusted_width = (max_length + 2)
-                worksheet.column_dimensions[column_letter].width = adjusted_width
-        
-        return response
-
-    # Continue with normal view processing for HTML display
-    # Ordenação
+    # **MOVED SORTING TO THE BEGINNING - Apply sorting BEFORE filtering and pagination**
     sort_column = request.GET.get('sort', 'criado_em')
     sort_order = request.GET.get('order', 'desc')
     
@@ -121,9 +49,106 @@ def lista_apolices(request):
         order_field = f'-{order_field}'
     
     apolices = apolices.order_by(order_field)
+
+    # Filtros (AFTER sorting)
+    numero_filter = request.GET.get('numero')
+    if numero_filter:
+        apolices = apolices.filter(numero__icontains=numero_filter)
     
+    seguradora_filter = request.GET.get('seguradora')
+    if seguradora_filter:
+        apolices = apolices.filter(seguradora__icontains=seguradora_filter)
+    
+    tipo_seguro_filter = request.GET.get('tipo_seguro')
+    if tipo_seguro_filter:
+        apolices = apolices.filter(tipo_seguro_id=tipo_seguro_filter)
+    
+    status_filter = request.GET.get('status', 'ativa')
+    if status_filter:
+        apolices = apolices.filter(status=status_filter)
+    
+    segurado_filter = request.GET.get('segurado')
+    if segurado_filter:
+        apolices = apolices.filter(segurado_id=segurado_filter)
+    
+    data_inicio_filter = request.GET.get('data_inicio')
+    if data_inicio_filter:
+        apolices = apolices.filter(data_inicio__gte=data_inicio_filter)
+    
+    data_fim_filter = request.GET.get('data_fim')
+    if data_fim_filter:
+        apolices = apolices.filter(data_fim__lte=data_fim_filter)
+
+    # PAGINATION
+    items_per_page = request.GET.get('items_per_page', 10)
+    try:
+        items_per_page = int(items_per_page)
+    except (ValueError, TypeError):
+        items_per_page = 10
+
+    paginator = Paginator(apolices, items_per_page)
+    page_number = request.GET.get('page', 1)
+    
+    try:
+        page_obj = paginator.get_page(page_number)
+    except (PageNotAnInteger, EmptyPage):
+        page_obj = paginator.get_page(1)
+
+    # EXPORT TO EXCEL - Use the FILTERED and SORTED queryset
+    if request.GET.get('export') == 'xlsx':
+        data = []
+        for apolice in apolices:
+            data.append({
+                'Número': apolice.numero,
+                'Seguradora': apolice.seguradora,
+                'Tipo Seguro': apolice.tipo_seguro.nome if apolice.tipo_seguro else '',
+                'Segurado': apolice.segurado.nome if apolice.segurado else '',
+                'Status': apolice.get_status_display(),
+                'Data Início': apolice.data_inicio.strftime('%d/%m/%Y') if apolice.data_inicio else '',
+                'Data Fim': apolice.data_fim.strftime('%d/%m/%Y') if apolice.data_fim else '',
+                'Valor Seguro': str(apolice.valor_seguro),
+                'Valor Prêmio': str(apolice.valor_premio),
+                'Moeda': apolice.moeda,
+                'Observações': apolice.observacoes or '',
+                'Criado em': apolice.criado_em.strftime('%d/%m/%Y %H:%M') if apolice.criado_em else '',
+            })
+        
+        df = pd.DataFrame(data)
+        
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="apolices.xlsx"'
+        
+        with pd.ExcelWriter(response, engine='openpyxl') as writer:
+            df.to_excel(writer, sheet_name='Apólices', index=False)
+            
+            worksheet = writer.sheets['Apólices']
+            for column in worksheet.columns:
+                max_length = 0
+                column_letter = column[0].column_letter
+                for cell in column:
+                    try:
+                        if len(str(cell.value)) > max_length:
+                            max_length = len(str(cell.value))
+                    except:
+                        pass
+                adjusted_width = (max_length + 2)
+                worksheet.column_dimensions[column_letter].width = adjusted_width
+        
+        return response
+
     # Verificar se usuário pode adicionar apólices
-    pode_adicionar = request.user.groups.filter(name='Equipe').exists() or request.user.is_staff
+    pode_adicionar = (
+        request.user.groups.filter(name='Equipe').exists() or 
+        request.user.is_staff or 
+        request.user.has_perm('apolicies.add_apolice')
+    )
+
+    # Verificar se usuário pode deletar apólices
+    pode_deletar = (
+        request.user.groups.filter(name='Equipe').exists() or 
+        request.user.is_staff or 
+        request.user.has_perm('apolicies.delete_apolice')
+    )
     
     # Estatísticas (após filtros)
     total_apolices = apolices.count()
@@ -136,15 +161,18 @@ def lista_apolices(request):
     total_valor_seguro_fmt = f"{total_valor_seguro:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
     total_valor_premio_fmt = f"{total_valor_premio:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
-    # Formatar valores individuais para exibição
+    # Formatar valores individuais para exibição (using paginated objects)
     apolices_formatadas = []
-    for apolice in apolices:
+    for apolice in page_obj:
         apolice.valor_seguro_fmt = f"{apolice.valor_seguro:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
         apolice.valor_premio_fmt = f"{apolice.valor_premio:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
         apolices_formatadas.append(apolice)
     
     context = {
         'apolices': apolices_formatadas,
+        'page_obj': page_obj,
+        'paginator': paginator,
+        'items_per_page': items_per_page,
         'status_choices': Apolice.STATUS_CHOICES,
         'tipos_seguros': TiposSeguros.objects.filter(ativo=True).order_by('nome'),
         'numero_filter': numero_filter,
@@ -161,6 +189,7 @@ def lista_apolices(request):
         'total_valor_seguro': total_valor_seguro_fmt,
         'total_valor_premio': total_valor_premio_fmt,
         'pode_adicionar': pode_adicionar,
+        'pode_deletar': pode_deletar,
         'current_sort': sort_column,
         'current_order': sort_order,
     }
@@ -170,7 +199,7 @@ def lista_apolices(request):
 def nova_apolice(request):
     if request.method == 'POST':
         try:
-            # Validações básicas - CORRIGIDO
+            # Validações básicas
             required_fields = ['numero', 'seguradora', 'tipo_seguro', 'segurado', 'status', 
                              'data_inicio', 'data_fim', 'valor_seguro', 'valor_premio']
             
@@ -184,21 +213,43 @@ def nova_apolice(request):
                 messages.error(request, 'Já existe uma apólice com este número!')
                 return redirect('lista_apolices')
             
-            # Cria a nova apólice - CORRIGIDO
+            # **FIX: Convert string dates to date objects**
+            from datetime import datetime
+            
+            data_inicio = datetime.strptime(request.POST['data_inicio'], '%Y-%m-%d').date()
+            data_fim = datetime.strptime(request.POST['data_fim'], '%Y-%m-%d').date()
+
+            if data_fim < data_inicio:
+                messages.error(request, 'Data de fim não pode ser anterior à data de início!')
+                return render(request, 'app/lista_apolices.html', {
+                    'apolices': Apolice.objects.all(),
+                    'status_choices': Apolice.STATUS_CHOICES,
+                    'tipos_seguros': TiposSeguros.objects.filter(ativo=True),
+                    'companies': Companies.objects.all(),
+                    'pode_adicionar': request.user.groups.filter(name='Equipe').exists() or request.user.is_staff or request.user.has_perm('apolicies.add_apolice'),
+                    'pode_deletar': request.user.groups.filter(name='Equipe').exists() or request.user.is_staff or request.user.has_perm('apolicies.delete_apolice'),
+                    
+                })
+            
+            # **FIX: Convert numeric values**
+            valor_seguro = float(request.POST['valor_seguro'])
+            valor_premio = float(request.POST['valor_premio'])
+            
+            # Cria a nova apólice - WITH FIXED DATA TYPES
             apolice = Apolice(
-                numero=request.POST['numero'],
-                seguradora=request.POST['seguradora'],
-                tipo_seguro_id=request.POST['tipo_seguro'],  # CORREÇÃO: tipo -> tipo_seguro
+                numero=request.POST['numero'].upper(),
+                seguradora=request.POST['seguradora'].upper(),
+                tipo_seguro_id=request.POST['tipo_seguro'],
                 segurado_id=request.POST['segurado'],
                 status=request.POST['status'],
-                data_inicio=request.POST['data_inicio'],
-                data_fim=request.POST['data_fim'],
-                valor_seguro=request.POST['valor_seguro'],
-                valor_premio=request.POST['valor_premio'],
+                data_inicio=data_inicio,  # **FIXED: Now a date object**
+                data_fim=data_fim,        # **FIXED: Now a date object**
+                valor_seguro=valor_seguro, # **FIXED: Now a float**
+                valor_premio=valor_premio, # **FIXED: Now a float**
                 moeda=request.POST.get('moeda', 'BRL'),
                 observacoes=request.POST.get('observacoes', '')
             )
-            
+
             # Salva o arquivo PDF se existir
             if 'pdf' in request.FILES:
                 pdf_file = request.FILES['pdf']
@@ -212,6 +263,9 @@ def nova_apolice(request):
             messages.success(request, 'Apólice criada com sucesso!')
             return redirect('lista_apolices')
             
+        except ValueError as e:
+            messages.error(request, f'Erro nos dados: {str(e)}')
+            return redirect('lista_apolices')
         except Exception as e:
             messages.error(request, f'Erro ao criar apólice: {str(e)}')
             return redirect('lista_apolices')
@@ -248,16 +302,26 @@ def editar_apolice(request):
             apolice_id = request.POST.get('apolice_id')
             apolice = Apolice.objects.get(id=apolice_id)
             
-            # Atualizar campos - CORRIGIDO
-            apolice.numero = request.POST['numero']
-            apolice.seguradora = request.POST['seguradora']
-            apolice.tipo_seguro_id = request.POST['tipo_seguro']  # CORREÇÃO: tipo -> tipo_seguro
+            # **FIX: Convert string dates to date objects**
+            from datetime import datetime
+            
+            data_inicio = datetime.strptime(request.POST['data_inicio'], '%Y-%m-%d').date()
+            data_fim = datetime.strptime(request.POST['data_fim'], '%Y-%m-%d').date()
+            
+            # **FIX: Convert numeric values**
+            valor_seguro = float(request.POST['valor_seguro'])
+            valor_premio = float(request.POST['valor_premio'])
+            
+            # Atualizar campos - WITH FIXED DATA TYPES
+            apolice.numero = request.POST['numero'].upper()
+            apolice.seguradora = request.POST['seguradora'].upper()
+            apolice.tipo_seguro_id = request.POST['tipo_seguro']
             apolice.segurado_id = request.POST['segurado']
             apolice.status = request.POST['status']
-            apolice.data_inicio = request.POST['data_inicio']
-            apolice.data_fim = request.POST['data_fim']
-            apolice.valor_seguro = request.POST['valor_seguro']
-            apolice.valor_premio = request.POST['valor_premio']
+            apolice.data_inicio = data_inicio  # **FIXED: Now a date object**
+            apolice.data_fim = data_fim        # **FIXED: Now a date object**
+            apolice.valor_seguro = valor_seguro # **FIXED: Now a float**
+            apolice.valor_premio = valor_premio # **FIXED: Now a float**
             apolice.moeda = request.POST.get('moeda', 'BRL')
             apolice.observacoes = request.POST.get('observacoes', '')
             
@@ -272,6 +336,10 @@ def editar_apolice(request):
             apolice.save()
             messages.success(request, 'Apólice atualizada com sucesso!')
             
+        except Apolice.DoesNotExist:
+            messages.error(request, 'Apólice não encontrada!')
+        except ValueError as e:
+            messages.error(request, f'Erro nos dados: {str(e)}')
         except Exception as e:
             messages.error(request, f'Erro ao atualizar apólice: {str(e)}')
     
